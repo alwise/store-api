@@ -31,6 +31,7 @@ exports.Controller = {
              */
             const ref = Date.now();
             const dateSold = (0, moment_1.default)().format('YYYY-MM-DD');
+            const month = (0, moment_1.default)().format('YYYY-MM');
             const sales = yield sales_model_1.Sales.create({
                 reference: `${ref}`,
                 subTotal: parseFloat(parseFloat(`${(body === null || body === void 0 ? void 0 : body.subTotal) || 0.0}`).toFixed(2)),
@@ -40,13 +41,15 @@ exports.Controller = {
                 customerId: (body === null || body === void 0 ? void 0 : body.customerId) || 'unknown',
                 isCredit: (body === null || body === void 0 ? void 0 : body.customerId) === undefined ? false : true,
                 date: dateSold,
+                yearMonth: month
             }, { transaction });
             /**
              *  update customer balance
              */
             if ((sales === null || sales === void 0 ? void 0 : sales.isCredit) === true) {
                 if ((sales === null || sales === void 0 ? void 0 : sales.balance) > 0) {
-                    yield model_1.Customer.increment('balance', { by: sales === null || sales === void 0 ? void 0 : sales.balance, transaction });
+                    yield model_1.Customer.increment('balance', { by: sales === null || sales === void 0 ? void 0 : sales.balance,
+                        where: { id: sales === null || sales === void 0 ? void 0 : sales.customerId }, transaction });
                 }
             }
             /**
@@ -84,6 +87,17 @@ exports.Controller = {
         }
         catch (error) {
             yield transaction.rollback();
+            return res.send((0, Utils_1.sendFailedResponse)({ error }));
+        }
+    }),
+    getSales: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const option = JSON.parse(JSON.stringify(req.query || {}));
+            const pos = new sales_model_1.Sales();
+            const data = yield pos.getSales(option);
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Sales data retrieved successfully', data }));
+        }
+        catch (error) {
             return res.send((0, Utils_1.sendFailedResponse)({ error }));
         }
     })

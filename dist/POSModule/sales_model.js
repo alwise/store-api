@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Sales = void 0;
 const database_1 = require("../Config/database");
 const sequelize_1 = require("sequelize");
+const moment_1 = __importDefault(require("moment"));
 const sales_item_model_1 = require("./sales_item_model");
 class Sales extends sequelize_1.Model {
     constructor() {
@@ -36,6 +40,7 @@ Sales.init({
     amountPaid: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
     isCredit: { type: sequelize_1.DataTypes.BOOLEAN(), allowNull: false, defaultValue: false },
     date: { type: sequelize_1.DataTypes.DATEONLY(), allowNull: false },
+    yearMonth: { type: sequelize_1.DataTypes.STRING(20), allowNull: false, defaultValue: (0, moment_1.default)().format('YYYY-MM') },
 }, { sequelize: database_1.sequelize, underscored: true });
 Sales.hasMany(sales_item_model_1.SalesItem, { as: 'items', foreignKey: 'salesId', onDelete: "CASCADE" });
 //# sourceMappingURL=sales_model.js.map

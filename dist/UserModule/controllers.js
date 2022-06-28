@@ -47,7 +47,7 @@ exports.Controller = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const body = req.body;
-            const user = new model_1.User(body);
+            const user = new model_1.User(Object.assign(Object.assign({}, body), { password: body === null || body === void 0 ? void 0 : body.phoneNumber }));
             const exists = yield user.getUsers({ phoneNumber: body === null || body === void 0 ? void 0 : body.phoneNumber });
             if ((exists === null || exists === void 0 ? void 0 : exists.length) > 0) {
                 return res.send((0, Utils_1.sendFailedResponse)({
@@ -64,7 +64,7 @@ exports.Controller = {
     login: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const body = req.body;
-            const user = new model_1.User(req.body);
+            const user = new model_1.User(body);
             const result = yield user.login();
             if (result === undefined) {
                 return res.send((0, Utils_1.sendFailedResponse)({ message: 'Wrong username or password' }));

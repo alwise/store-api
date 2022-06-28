@@ -23,7 +23,11 @@ class Customer extends sequelize_1.Model {
             });
         });
         this.updateCustomer = () => __awaiter(this, void 0, void 0, function* () {
-            return yield Customer.update(this, { where: { id: this.id } });
+            return yield Customer.update({
+                name: this.name,
+                phoneNumber: this.phoneNumber,
+                balance: parseFloat(`${this.balance || 0.0}`)
+            }, { where: { id: this.id } });
         });
         this.deleteCustomer = () => __awaiter(this, void 0, void 0, function* () {
             return yield Customer.destroy({ where: { id: this.id } });

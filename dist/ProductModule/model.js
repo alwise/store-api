@@ -23,7 +23,11 @@ class Product extends sequelize_1.Model {
             });
         });
         this.updateProduct = () => __awaiter(this, void 0, void 0, function* () {
-            return yield Product.update(this, { where: { id: this.id } });
+            return yield Product.update({
+                productName: this.productName,
+                price: this.price,
+                quantity: this.quantity
+            }, { where: { id: this.id } });
         });
         this.deleteProduct = () => __awaiter(this, void 0, void 0, function* () {
             return yield Product.destroy({ where: { id: this.id } });

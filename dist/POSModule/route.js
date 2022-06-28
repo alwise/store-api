@@ -8,5 +8,6 @@ exports.posRoute.post('/', controller_1.Controller.create)
     // .post('/login',Controller.login)
     // .patch('/',Controller.update)
     // .delete('/',Controller.deleteCustomer)
-    .get('/stats', controller_1.Controller.stats);
+    .get('/stats', controller_1.Controller.stats)
+    .get('/', controller_1.Controller.getSales);
 //# sourceMappingURL=route.js.map

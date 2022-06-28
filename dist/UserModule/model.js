@@ -55,6 +55,9 @@ class User extends sequelize_1.Model {
             return this.userResponseData(result.toJSON());
         });
         this.login = () => __awaiter(this, void 0, void 0, function* () {
+            console.log('====================================');
+            console.log(this.phoneNumber);
+            console.log('====================================');
             const useExist = yield User.findOne({
                 where: { phoneNumber: this.phoneNumber }
             });
@@ -64,7 +67,11 @@ class User extends sequelize_1.Model {
             return undefined;
         });
         this.updateUser = () => __awaiter(this, void 0, void 0, function* () {
-            return yield User.update(this, { where: { id: this.id } });
+            return yield User.update({
+                phoneNumber: this.phoneNumber,
+                name: this.name,
+                role: this.role,
+            }, { where: { id: this.id } });
         });
         this.deleteUser = () => __awaiter(this, void 0, void 0, function* () {
             return yield User.destroy({ where: { id: this.id }, force: false });
