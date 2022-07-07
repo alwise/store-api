@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Customer = void 0;
+exports.Payment = exports.Customer = void 0;
 const database_1 = require("../Config/database");
 const sequelize_1 = require("sequelize");
 class Customer extends sequelize_1.Model {
@@ -33,7 +33,7 @@ class Customer extends sequelize_1.Model {
             return yield Customer.destroy({ where: { id: this.id } });
         });
         this.getCustomers = (options) => __awaiter(this, void 0, void 0, function* () {
-            return yield Customer.findAll({ where: Object.assign({}, options), order: [['balance', 'DESC']] });
+            return yield Customer.findAll({ where: Object.assign({}, options), order: [['balance', 'DESC'], ['updatedAt', 'DESC']], include: { all: true } });
         });
     }
     Customer() {
@@ -46,4 +46,34 @@ Customer.init({
     balance: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
     phoneNumber: { type: sequelize_1.DataTypes.STRING(16), defaultValue: '0000000000' }
 }, { sequelize: database_1.sequelize, underscored: true });
+// tslint:disable-next-line: max-classes-per-file
+class Payment extends sequelize_1.Model {
+    constructor() {
+        super(...arguments);
+        this.makePayment = () => __awaiter(this, void 0, void 0, function* () {
+            return yield Payment.create({
+                customerId: this.customerId,
+                previousAmount: this.previousAmount,
+                paidAmount: this.paidAmount,
+                newBalance: this.newBalance,
+                paidTo: this.paidTo,
+            });
+        });
+    }
+    // tslint:disable-next-line: no-empty
+    Payment() {
+    }
+}
+exports.Payment = Payment;
+Payment.init({
+    id: { type: sequelize_1.DataTypes.UUID, allowNull: false, primaryKey: true, defaultValue: sequelize_1.UUIDV4 },
+    customerId: { type: sequelize_1.DataTypes.UUID, allowNull: false },
+    previousAmount: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
+    paidAmount: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
+    newBalance: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
+    paidTo: { type: sequelize_1.DataTypes.UUID, allowNull: false },
+}, {
+    sequelize: database_1.sequelize, underscored: true
+});
+Customer.hasMany(Payment, { as: 'payments', foreignKey: 'customerId', onDelete: 'CASCADE' });
 //# sourceMappingURL=model.js.map

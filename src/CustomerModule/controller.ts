@@ -1,7 +1,8 @@
 
-import {Customer} from './model';
+import {Customer, Payment} from './model';
 import { Request, Response } from 'express';
 import { sendFailedResponse, sendSuccessResponse } from '../Utils';
+import { sequelize } from '../Config/database';
 
 export const Controller = {
     create : async (req:Request,res:Response) =>{
@@ -25,7 +26,22 @@ export const Controller = {
        }
     },
 
+    pay:async (req:Request,res:Response) => {
+        const transaction = await sequelize.transaction();
+        try {
+             const body = req.body;
+             await Customer.decrement('balance',{by:parseFloat(`${body?.paidAmount || 0.0}`),where:{id:body?.customerId},transaction})
+              await Payment.create(body,{transaction});
+              transaction.commit();
+             return res.send(sendSuccessResponse({ message:'Payment updated successfully' }));
 
+        } catch (error) {
+            transaction.rollback()
+            return res.send(sendFailedResponse(
+                {error}
+            ))
+        }
+    },
     update : async (req:Request,res:Response) =>{
        try {
         const customer = new Customer(req.body);

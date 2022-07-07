@@ -8,6 +8,7 @@ import { DataTypes, Model,UUIDV4 } from 'sequelize';
     balance?:number | string | undefined;
     createdAt?:string | undefined;
     updatedAt?:string | undefined;
+    payment?:Payment[]
 }
 
 
@@ -39,7 +40,7 @@ export class  Customer extends Model {
         return await Customer.destroy({where:{id:this.id}});
     }
     getCustomers = async (options:object) =>{
-        return await Customer.findAll({where:{...options},order:[['balance','DESC']]});
+        return await Customer.findAll({where:{...options},order:[['balance','DESC'],['updatedAt','DESC']],include:{all:true}});
     }
 
 }
@@ -50,3 +51,48 @@ Customer.init({
     balance:{type:DataTypes.DOUBLE(10,2),allowNull:false,defaultValue:0.0},
     phoneNumber:{type:DataTypes.STRING(16),defaultValue:'0000000000'}
 },{sequelize,underscored:true})
+
+
+// tslint:disable-next-line: max-classes-per-file
+export class Payment extends Model{
+   id:string;
+   customerId:string;
+   previousAmount:number;
+   paidAmount:number;
+   newBalance:number;
+   paidTo:string;
+   updatedAt?:string;
+   createdAt?:string;
+
+   // tslint:disable-next-line: no-empty
+   Payment(){
+   }
+
+   makePayment = async ()=>{
+     return await Payment.create({
+        customerId:this.customerId,
+        previousAmount:this.previousAmount,
+        paidAmount:this.paidAmount,
+        newBalance:this.newBalance,
+        paidTo:this.paidTo,
+     })
+   }
+
+
+}
+
+Payment.init({
+    id:{type:DataTypes.UUID,allowNull:false,primaryKey:true,defaultValue:UUIDV4},
+    customerId:{type:DataTypes.UUID,allowNull:false},
+    previousAmount:{type:DataTypes.DOUBLE(10,2),allowNull:false,defaultValue:0.0},
+    paidAmount:{type:DataTypes.DOUBLE(10,2),allowNull:false,defaultValue:0.0},
+    newBalance:{type:DataTypes.DOUBLE(10,2),allowNull:false,defaultValue:0.0},
+    paidTo:{type:DataTypes.UUID,allowNull:false},
+
+},{
+    sequelize,underscored:true
+})
+
+
+
+Customer.hasMany(Payment,{ as:'payments',foreignKey:'customerId',onDelete:'CASCADE' } )

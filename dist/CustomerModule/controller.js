@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Controller = void 0;
 const model_1 = require("./model");
 const Utils_1 = require("../Utils");
+const database_1 = require("../Config/database");
 exports.Controller = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -27,6 +28,20 @@ exports.Controller = {
             return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Customer created successfully', data: result }));
         }
         catch (error) {
+            return res.send((0, Utils_1.sendFailedResponse)({ error }));
+        }
+    }),
+    pay: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const transaction = yield database_1.sequelize.transaction();
+        try {
+            const body = req.body;
+            yield model_1.Customer.decrement('balance', { by: parseFloat(`${(body === null || body === void 0 ? void 0 : body.paidAmount) || 0.0}`), where: { id: body === null || body === void 0 ? void 0 : body.customerId }, transaction });
+            yield model_1.Payment.create(body, { transaction });
+            transaction.commit();
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Payment updated successfully' }));
+        }
+        catch (error) {
+            transaction.rollback();
             return res.send((0, Utils_1.sendFailedResponse)({ error }));
         }
     }),
