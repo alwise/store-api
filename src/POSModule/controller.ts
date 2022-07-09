@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { sendFailedResponse, sendSuccessResponse } from '../Utils';
 import { sequelize } from '../Config/database';
 import moment from 'moment';
+import { Product } from '../ProductModule/model';
 
 
 interface Stats{
@@ -21,7 +22,7 @@ export const Controller = {
         const body = req.body;
         const itemsCopy:any[] = body?.items;
         const items:Partial<SalesItemInt>[] = [];
-       
+
         /**
          * submit sales data
          */
@@ -49,14 +50,14 @@ export const Controller = {
                   where:{id:sales?.customerId}  ,transaction})
             }
         }
-        
+
         /**
          * reformat and normalize items data
          */
         itemsCopy.forEach((val)=>{
             items.push({
                 salesId:sales?.id,
-                quantity:parseInt(`${val?.quantity || 0}`),
+                quantity:parseInt(`${val?.quantity || 0}`,10),
                 price:parseFloat(parseFloat(`${val?.price || 0.0}`).toFixed(2)),
                 productName:val?.productName,
                 date:dateSold,
@@ -67,7 +68,11 @@ export const Controller = {
      * create sales items
      */
     const salesItems = await SalesItem.bulkCreate(items,{transaction});
-
+    
+    /**
+     *  update product prices and quantities
+     */
+    await Product.bulkCreate(body?.products,{ updateOnDuplicate:['quantity'],transaction })
         await transaction.commit()
         return res.send(sendSuccessResponse({ message:'Sales created successfully',data:{salesItems,sales} }));
        } catch (error) {
@@ -96,14 +101,14 @@ export const Controller = {
     },
 
     getSales: async(req:Request,res:Response)=>{
-       
+
         try {
             const option = JSON.parse(JSON.stringify(req.query || {}));
             const pos = new  Sales()
             const data = await pos.getSales(option);
             return res.send(sendSuccessResponse({ message:'Sales data retrieved successfully',data }));
         } catch (error) {
-            
+
             return res.send(sendFailedResponse(
                 {error}
             ))

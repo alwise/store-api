@@ -38,7 +38,7 @@ export class  Product extends Model {
         return await Product.destroy({where:{id:this.id}});
     }
     getProducts = async (options:object) =>{
-        return await Product.findAll({where:{...options}});
+        return await Product.findAll({where:{...options},order:[['createdAt','DESC']]});
     }
 
 }

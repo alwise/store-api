@@ -40,7 +40,7 @@ export class  Customer extends Model {
         return await Customer.destroy({where:{id:this.id}});
     }
     getCustomers = async (options:object) =>{
-        return await Customer.findAll({where:{...options},order:[['balance','DESC'],['updatedAt','DESC']],include:{all:true}});
+        return await Customer.findAll({where:{...options},order:[['balance','DESC'],['updatedAt','DESC']],include:[{ model:Payment,as:'payments', order:[["createdAt","DESC"]],limit:60}]});
     }
 
 }
