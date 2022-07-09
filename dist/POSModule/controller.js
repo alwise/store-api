@@ -19,6 +19,7 @@ const model_1 = require("../CustomerModule/model");
 const Utils_1 = require("../Utils");
 const database_1 = require("../Config/database");
 const moment_1 = __importDefault(require("moment"));
+const model_2 = require("../ProductModule/model");
 exports.Controller = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const transaction = yield database_1.sequelize.transaction();
@@ -58,7 +59,7 @@ exports.Controller = {
             itemsCopy.forEach((val) => {
                 items.push({
                     salesId: sales === null || sales === void 0 ? void 0 : sales.id,
-                    quantity: parseInt(`${(val === null || val === void 0 ? void 0 : val.quantity) || 0}`),
+                    quantity: parseInt(`${(val === null || val === void 0 ? void 0 : val.quantity) || 0}`, 10),
                     price: parseFloat(parseFloat(`${(val === null || val === void 0 ? void 0 : val.price) || 0.0}`).toFixed(2)),
                     productName: val === null || val === void 0 ? void 0 : val.productName,
                     date: dateSold,
@@ -68,6 +69,10 @@ exports.Controller = {
              * create sales items
              */
             const salesItems = yield sales_item_model_1.SalesItem.bulkCreate(items, { transaction });
+            /**
+             *  update product prices and quantities
+             */
+            yield model_2.Product.bulkCreate(body === null || body === void 0 ? void 0 : body.products, { updateOnDuplicate: ['quantity'], transaction });
             yield transaction.commit();
             return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Sales created successfully', data: { salesItems, sales } }));
         }

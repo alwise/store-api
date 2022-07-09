@@ -33,7 +33,7 @@ class Product extends sequelize_1.Model {
             return yield Product.destroy({ where: { id: this.id } });
         });
         this.getProducts = (options) => __awaiter(this, void 0, void 0, function* () {
-            return yield Product.findAll({ where: Object.assign({}, options) });
+            return yield Product.findAll({ where: Object.assign({}, options), order: [['createdAt', 'DESC']] });
         });
     }
     Product() {

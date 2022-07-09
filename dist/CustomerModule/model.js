@@ -33,7 +33,7 @@ class Customer extends sequelize_1.Model {
             return yield Customer.destroy({ where: { id: this.id } });
         });
         this.getCustomers = (options) => __awaiter(this, void 0, void 0, function* () {
-            return yield Customer.findAll({ where: Object.assign({}, options), order: [['balance', 'DESC'], ['updatedAt', 'DESC']], include: { all: true } });
+            return yield Customer.findAll({ where: Object.assign({}, options), order: [['balance', 'DESC'], ['updatedAt', 'DESC']], include: [{ model: Payment, as: 'payments', order: [["createdAt", "DESC"]], limit: 60 }] });
         });
     }
     Customer() {
