@@ -2,6 +2,13 @@ import ThermalPrinter, { PrinterTypes, TableAlign } from "browser-thermal-printe
 import  Printer  from 'node-printer'
 import moment from 'moment';
 
+const getPrinters = () =>{
+    console.log('Printers:====================================');
+    console.log( Printer.list());
+    console.log('====================================');
+    return Printer.list();
+}
+
 const printContent = async (data:any)=>{
     try {
         const options = {
@@ -10,7 +17,7 @@ const printContent = async (data:any)=>{
             q: 100
         };
         // Printer.list();
-        const printer = new Printer('EPSON_TM_T20III');
+        const printer = new Printer(process.env.PRINTER_NAME);
         printer.printBuffer(data,options);
     } catch (error) {
         console.log('Print error====================================');
@@ -306,5 +313,6 @@ const paymentPrintView =  (data:any ) =>{
   export default {
     purchaseReceiptData,
     paymentPrintView,
-    printContent
+    printContent,
+    getPrinters
   }
