@@ -3,7 +3,7 @@ import { Configs } from ".";
 
 
 
-export const sequelize = new Sequelize( Configs.database.DBB_URL(), {
+export const sequelize = new Sequelize( Configs.database.DBB_URL, {
     ...Configs.database.options
 });
 

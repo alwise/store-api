@@ -5,9 +5,9 @@ import { Request, Response } from 'express';
 import { sendFailedResponse, sendSuccessResponse } from '../Utils';
 import { sequelize } from '../Config/database';
 import moment from 'moment';
-import { Product } from '../ProductModule/model';
-
-
+// import { Product } from '../ProductModule/model';
+import { printer } from '../Utils';
+// import { printer,types } from 'node-thermal-printer'
 interface Stats{
     totalAmount:number;
     salesCount:number;
@@ -68,11 +68,11 @@ export const Controller = {
      * create sales items
      */
     const salesItems = await SalesItem.bulkCreate(items,{transaction});
-    
+
     /**
      *  update product prices and quantities
      */
-    await Product.bulkCreate(body?.products,{ updateOnDuplicate:['quantity'],transaction })
+    // await Product.bulkCreate(body?.products,{ updateOnDuplicate:['quantity'],transaction })
         await transaction.commit()
         return res.send(sendSuccessResponse({ message:'Sales created successfully',data:{salesItems,sales} }));
        } catch (error) {
@@ -114,10 +114,21 @@ export const Controller = {
             ))
         }
 
+    },
+
+    printSalesReceipt:async(req:Request,res:Response) =>{
+        try {
+            const salesData = req.body;
+            await printer.printContent(printer.purchaseReceiptData(salesData));
+            return res.send('Thank your')
+        } catch (error) {
+            console.log('Print error====================================');
+            console.log(error?.message);
+            console.log('====================================');
+            return res.send('Unable to print data')
+        }
     }
 
-
-
-
-
 }
+
+

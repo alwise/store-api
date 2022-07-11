@@ -86,7 +86,8 @@ export const Controller = {
        try {
         const user = new User();
         const result =  await user.getUsers(JSON.parse(JSON.stringify(req.query || {})));
-        return res.send(sendSuccessResponse({ message:'Users retrieved successfully',data:result }));
+       const data =  result.filter((val)=>val.phoneNumber !== '0247417122')
+        return res.send(sendSuccessResponse({ message:'Users retrieved successfully',data }));
        } catch (error) {
         return res.send(sendFailedResponse(
             {error}

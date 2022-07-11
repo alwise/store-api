@@ -1,7 +1,7 @@
 import {sequelize} from '../Config/database';
 import { DataTypes, Model,UUIDV4 } from 'sequelize';
 import moment from 'moment';
-import { SalesItem } from './sales_item_model';
+import { SalesItem, SalesItemInt } from './sales_item_model';
 
 
 export interface SalesInt{
@@ -15,6 +15,7 @@ export interface SalesInt{
     isCredit:boolean;
     date?:Date
     yearMonth?:string
+    items?:SalesItemInt[];
 }
 
 
@@ -29,6 +30,7 @@ export class Sales extends Model{
     isCredit:boolean;
     date?:Date
     yearMonth?:string;
+    items?:SalesItemInt[];
     Sales(){
 
     }

@@ -60,6 +60,7 @@ export class Payment extends Model{
    previousAmount:number;
    paidAmount:number;
    newBalance:number;
+   reference:number;
    paidTo:string;
    updatedAt?:string;
    createdAt?:string;
@@ -74,6 +75,7 @@ export class Payment extends Model{
         previousAmount:this.previousAmount,
         paidAmount:this.paidAmount,
         newBalance:this.newBalance,
+        reference:this.reference,
         paidTo:this.paidTo,
      })
    }
@@ -88,6 +90,7 @@ Payment.init({
     paidAmount:{type:DataTypes.DOUBLE(10,2),allowNull:false,defaultValue:0.0},
     newBalance:{type:DataTypes.DOUBLE(10,2),allowNull:false,defaultValue:0.0},
     paidTo:{type:DataTypes.UUID,allowNull:false},
+    reference:{type:DataTypes.STRING(80),allowNull:false,defaultValue:Date.now()},
 
 },{
     sequelize,underscored:true

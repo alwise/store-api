@@ -5,7 +5,7 @@ import { Controller } from "./controller";
 export const posRoute = Router();
 
 posRoute.post('/',Controller.create )
-        // .post('/login',Controller.login)
+        .post('/print',Controller.printSalesReceipt)
         // .patch('/',Controller.update)
         // .delete('/',Controller.deleteCustomer)
         .get('/stats',Controller.stats)
