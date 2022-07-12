@@ -4,7 +4,7 @@ import moment from 'moment';
 
 const getPrinters = () =>{
     console.log('Printers:====================================');
-    console.log( Printer.list());
+    console.log(process.env.PRINTER_NAME, Printer.list());
     console.log('====================================');
     return Printer.list();
 }
