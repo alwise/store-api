@@ -1,8 +1,3 @@
-secrete=mysamplesecrete
-NODE_ENV=development
-password=adminadmin
-PRINTER_NAME='EPSON TM-T20III Receipt'
-
 
 git clone https://github.com/alwise/store-api.git
 
