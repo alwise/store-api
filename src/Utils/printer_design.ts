@@ -39,7 +39,7 @@ const purchaseReceiptData =  ( data:any ) =>{
     printer.println("Asafo, Near Star Oil");
     printer.println("0209860893 / 0544832925");
     printer.setTextSize(0,0);
-    printer.table([`${data?.isCredit ? "Credit Purchase ":"Cash Sales "}#${data?.metaData?.reference} `,moment(`${data?.metaData?.date}`).format("YYYY-MM-DD HH:mm")]);
+    printer.table([`${data?.metaData?.isCredit ? "Credit Purchase ":"Cash Sales "}#${data?.metaData?.reference} `,moment(`${data?.metaData?.date}`).format("YYYY-MM-DD HH:mm")]);
     printer.alignLeft();
     printer.print(`Sold by: ${data?.metaData?.seller} ...  `);
     printer.alignRight();

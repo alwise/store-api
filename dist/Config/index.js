@@ -10,8 +10,8 @@ const dialect = 'postgres';
 exports.Configs = {
     database: {
         DB_URL_TEST: 'postgres://postgres:admin@localhost:5432/store',
-        DB_URL_PRODUCTION: 'postgres://boltlinks06db:boltlinks06db@boltlinks06db.cvaap4iqjoqa.eu-west-1.rds.amazonaws.com:5432/store',
-        DBB_URL: () => process.env.NODE_ENV === 'development' ? exports.Configs.database.DB_URL_TEST : exports.Configs.database.DB_URL_PRODUCTION,
+        DB_URL_PRODUCTION: '',
+        DBB_URL: 'postgres://postgres:admin@localhost:5432/store',
         options: {
             dialect,
             dialectOptions: {
