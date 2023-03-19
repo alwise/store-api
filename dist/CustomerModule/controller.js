@@ -13,6 +13,10 @@ exports.Controller = void 0;
 const model_1 = require("./model");
 const Utils_1 = require("../Utils");
 const database_1 = require("../Config/database");
+// import { printer } from '../Utils';
+// import { User } from '../UserModule/model';
+// import moment from 'moment';
+const sales_model_1 = require("../POSModule/sales_model");
 exports.Controller = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -36,9 +40,21 @@ exports.Controller = {
         try {
             const body = req.body;
             yield model_1.Customer.decrement('balance', { by: parseFloat(`${(body === null || body === void 0 ? void 0 : body.paidAmount) || 0.0}`), where: { id: body === null || body === void 0 ? void 0 : body.customerId }, transaction });
-            yield model_1.Payment.create(body, { transaction });
+            const now = Date.now();
+            const payment = yield model_1.Payment.create(Object.assign(Object.assign({}, body), { reference: `${now}` }), { transaction });
+            // const customer = await Customer.findByPk(body?.customerId, { transaction })
+            // const seller = await User.findByPk(payment.paidTo, { transaction });
             transaction.commit();
-            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Payment updated successfully' }));
+            // await printer.printContent(printer.paymentPrintView({
+            //     reference: payment.reference,
+            //     customerName: customer?.name,
+            //     seller: seller?.name,
+            //     amountPaid: parseFloat(`${payment?.paidAmount || '0.0'}`).toFixed(2),
+            //     previousBalance: parseFloat(`${payment?.previousAmount || '0.0'}`).toFixed(2),
+            //     balance: parseFloat(`${customer?.balance || '0.0'}`).toFixed(2),
+            //     date: moment(payment?.updatedAt).format('YYYY-MM-DD HH:mm')
+            // }));
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Payment updated successfully', data: payment }));
         }
         catch (error) {
             transaction.rollback();
@@ -60,6 +76,34 @@ exports.Controller = {
             const customer = new model_1.Customer();
             const result = yield customer.getCustomers(JSON.parse(JSON.stringify(req.query || {})));
             return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Customers retrieved successfully', data: result }));
+        }
+        catch (error) {
+            return res.send((0, Utils_1.sendFailedResponse)({ error }));
+        }
+    }),
+    getCustomer: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const param = JSON.parse(JSON.stringify(req.query));
+            const customerModel = new model_1.Customer();
+            const customer = yield customerModel.getCustomer(param === null || param === void 0 ? void 0 : param.id);
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Customer retrieved successfully', data: customer }));
+        }
+        catch (error) {
+            return res.send((0, Utils_1.sendFailedResponse)({ error }));
+        }
+    }),
+    getCustomerHistory: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const param = JSON.parse(JSON.stringify(req.query));
+            const paymentHistory = yield model_1.Payment.findAll({
+                where: { customerId: param === null || param === void 0 ? void 0 : param.customerId }, order: [['createdAt', "DESC"]], limit: 50,
+            });
+            const salesHistory = yield sales_model_1.Sales.findAll({
+                where: { customerId: param === null || param === void 0 ? void 0 : param.customerId }, order: [['createdAt', "DESC"]],
+                limit: 50,
+                include: [{ all: true }]
+            });
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Customers history retrieved successfully', data: { payment: paymentHistory, purchases: salesHistory } }));
         }
         catch (error) {
             return res.send((0, Utils_1.sendFailedResponse)({ error }));

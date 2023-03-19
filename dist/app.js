@@ -17,10 +17,14 @@ const cors_1 = __importDefault(require("cors"));
 const database_1 = require("./Config/database");
 const controllers_1 = require("./UserModule/controllers");
 const routes_1 = require("./routes");
+const printer_design_1 = __importDefault(require("./Utils/printer_design"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express_1.default.json());
+app.use('/printers', (req, res) => {
+    return res.send(printer_design_1.default.getPrinters());
+});
 app.use('/v1', routes_1.routes);
 const PORT = process.env.PORT || 3200;
 database_1.sequelize.sync({ alter: true }).then((db) => {

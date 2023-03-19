@@ -19,7 +19,8 @@ const model_1 = require("../CustomerModule/model");
 const Utils_1 = require("../Utils");
 const database_1 = require("../Config/database");
 const moment_1 = __importDefault(require("moment"));
-const model_2 = require("../ProductModule/model");
+// import { Product } from '../ProductModule/model';
+const Utils_2 = require("../Utils");
 exports.Controller = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const transaction = yield database_1.sequelize.transaction();
@@ -49,8 +50,10 @@ exports.Controller = {
              */
             if ((sales === null || sales === void 0 ? void 0 : sales.isCredit) === true) {
                 if ((sales === null || sales === void 0 ? void 0 : sales.balance) > 0) {
-                    yield model_1.Customer.increment('balance', { by: sales === null || sales === void 0 ? void 0 : sales.balance,
-                        where: { id: sales === null || sales === void 0 ? void 0 : sales.customerId }, transaction });
+                    yield model_1.Customer.increment('balance', {
+                        by: sales === null || sales === void 0 ? void 0 : sales.balance,
+                        where: { id: sales === null || sales === void 0 ? void 0 : sales.customerId }, transaction
+                    });
                 }
             }
             /**
@@ -72,7 +75,7 @@ exports.Controller = {
             /**
              *  update product prices and quantities
              */
-            yield model_2.Product.bulkCreate(body === null || body === void 0 ? void 0 : body.products, { updateOnDuplicate: ['quantity'], transaction });
+            // await Product.bulkCreate(body?.products,{ updateOnDuplicate:['quantity'],transaction })
             yield transaction.commit();
             return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Sales created successfully', data: { salesItems, sales } }));
         }
@@ -104,6 +107,19 @@ exports.Controller = {
         }
         catch (error) {
             return res.send((0, Utils_1.sendFailedResponse)({ error }));
+        }
+    }),
+    printSalesReceipt: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const salesData = req.body;
+            yield Utils_2.printer.printContent(Utils_2.printer.purchaseReceiptData(salesData));
+            return res.send('Thank your');
+        }
+        catch (error) {
+            console.log('Print error====================================');
+            console.log(error === null || error === void 0 ? void 0 : error.message);
+            console.log('====================================');
+            return res.send('Unable to print data');
         }
     })
 };

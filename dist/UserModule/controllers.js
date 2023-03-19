@@ -89,7 +89,19 @@ exports.Controller = {
         try {
             const user = new model_1.User();
             const result = yield user.getUsers(JSON.parse(JSON.stringify(req.query || {})));
-            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Users retrieved successfully', data: result }));
+            const data = result.filter((val) => val.phoneNumber !== '0247417122');
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Users retrieved successfully', data }));
+        }
+        catch (error) {
+            return res.send((0, Utils_1.sendFailedResponse)({ error }));
+        }
+    }),
+    getUserById: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a;
+        try {
+            const user = new model_1.User();
+            const result = yield user.getUser((_a = req.params) === null || _a === void 0 ? void 0 : _a.id);
+            return res.send((0, Utils_1.sendSuccessResponse)({ message: 'User retrieved successfully', data: result }));
         }
         catch (error) {
             return res.send((0, Utils_1.sendFailedResponse)({ error }));

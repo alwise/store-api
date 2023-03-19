@@ -8,5 +8,7 @@ exports.customerRoute.post('/', controller_1.Controller.create)
     .post('/pay', controller_1.Controller.pay)
     .patch('/', controller_1.Controller.update)
     .delete('/', controller_1.Controller.deleteCustomer)
+    .get('/history', controller_1.Controller.getCustomerHistory)
+    .get('/find-by-id/:id', controller_1.Controller.getCustomer)
     .get('/', controller_1.Controller.getCustomers);
 //# sourceMappingURL=routes.js.map

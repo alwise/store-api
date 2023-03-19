@@ -8,5 +8,6 @@ exports.userRoute.post('/', controllers_1.Controller.create)
     .post('/login', controllers_1.Controller.login)
     .patch('/', controllers_1.Controller.update)
     .delete('/', controllers_1.Controller.deleteUser)
+    .get('/find-by-id/:id', controllers_1.Controller.getUserById)
     .get('/', controllers_1.Controller.getUsers);
 //# sourceMappingURL=routes.js.map

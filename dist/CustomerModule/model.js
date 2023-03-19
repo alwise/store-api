@@ -35,6 +35,9 @@ class Customer extends sequelize_1.Model {
         this.getCustomers = (options) => __awaiter(this, void 0, void 0, function* () {
             return yield Customer.findAll({ where: Object.assign({}, options), order: [['balance', 'DESC'], ['updatedAt', 'DESC']], include: [{ model: Payment, as: 'payments', order: [["createdAt", "DESC"]], limit: 60 }] });
         });
+        this.getCustomer = (id) => __awaiter(this, void 0, void 0, function* () {
+            return yield Customer.findByPk(id);
+        });
     }
     Customer() {
     }
@@ -56,6 +59,7 @@ class Payment extends sequelize_1.Model {
                 previousAmount: this.previousAmount,
                 paidAmount: this.paidAmount,
                 newBalance: this.newBalance,
+                reference: this.reference,
                 paidTo: this.paidTo,
             });
         });
@@ -72,6 +76,7 @@ Payment.init({
     paidAmount: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
     newBalance: { type: sequelize_1.DataTypes.DOUBLE(10, 2), allowNull: false, defaultValue: 0.0 },
     paidTo: { type: sequelize_1.DataTypes.UUID, allowNull: false },
+    reference: { type: sequelize_1.DataTypes.STRING(80), allowNull: false, defaultValue: Date.now() },
 }, {
     sequelize: database_1.sequelize, underscored: true
 });
