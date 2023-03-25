@@ -44,7 +44,9 @@ export class Customer extends Model {
     }
 
     getCustomer = async (id?: string) => {
-        return await Customer.findByPk(id);
+        const result = await Customer.findByPk(id);
+        console.log('Customer: ', result);
+        return result;
     }
 
 }

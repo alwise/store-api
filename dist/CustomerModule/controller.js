@@ -83,7 +83,7 @@ exports.Controller = {
     }),
     getCustomer: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const param = JSON.parse(JSON.stringify(req.query));
+            const param = JSON.parse(JSON.stringify(req.params));
             const customerModel = new model_1.Customer();
             const customer = yield customerModel.getCustomer(param === null || param === void 0 ? void 0 : param.id);
             return res.send((0, Utils_1.sendSuccessResponse)({ message: 'Customer retrieved successfully', data: customer }));

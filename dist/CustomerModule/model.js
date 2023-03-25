@@ -36,7 +36,9 @@ class Customer extends sequelize_1.Model {
             return yield Customer.findAll({ where: Object.assign({}, options), order: [['balance', 'DESC'], ['updatedAt', 'DESC']], include: [{ model: Payment, as: 'payments', order: [["createdAt", "DESC"]], limit: 60 }] });
         });
         this.getCustomer = (id) => __awaiter(this, void 0, void 0, function* () {
-            return yield Customer.findByPk(id);
+            const result = yield Customer.findByPk(id);
+            console.log('Customer: ', result);
+            return result;
         });
     }
     Customer() {

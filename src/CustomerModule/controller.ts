@@ -81,7 +81,7 @@ export const Controller = {
 
     getCustomer: async (req: Request, res: Response) => {
         try {
-            const param = JSON.parse(JSON.stringify(req.query));
+            const param = JSON.parse(JSON.stringify(req.params));
             const customerModel = new Customer();
             const customer = await customerModel.getCustomer(param?.id);
             return res.send(sendSuccessResponse({ message: 'Customer retrieved successfully', data: customer }));
