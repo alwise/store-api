@@ -15,7 +15,6 @@ app.use('/printers', (req: Request, res: Response) => {
     return res.send(printer_design.getPrinters())
 })
 app.use('/v1', routes);
-
 const PORT = process.env.PORT || 3200;
 
 sequelize.sync({ alter: true }).then((db) => {
@@ -32,4 +31,4 @@ sequelize.sync({ alter: true }).then((db) => {
     console.log('====================================');
     console.log('Database connection err due to: ', err?.message);
     console.log('====================================');
-})
+});
