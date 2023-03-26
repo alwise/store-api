@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc",
     "prestart": "yarn build",
-    "serve": "pm2 delete store-api || pm2 start dist/app.js --watch true --name store-api -i max || pm2 save",
+    "serve": "pm2 delete store-api || pm2 start dist/app.js --watch true --name store-api -i 4 || pm2 save",
     "dev": "tsnd --respawn src/app.ts",
     "start": "node dist/app.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
